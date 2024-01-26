@@ -3,6 +3,19 @@
 #include <stdlib.h>
 
 void factor(mpz_t n, mpz_t fact) {
+	if (mpz_even_p(n)) {
+		mpz_set_ui(fact, 2);
+		return;
+	}
+
+	mpz_set_ui(fact, 3);
+	while (mpz_cmp_ui(n, 1) > 0) {
+		if (mpz_divisible_p(n, fact)) return;
+		mpz_add_ui(fact, fact, 2);
+	}
+}
+
+void pollard_rho(mpz_t n, mpz_t fact) {
 	mpz_t x, y;
 	mpz_inits(x, y, NULL);
 
@@ -52,7 +65,7 @@ int main(int argc, char **argv) {
 
 	while ((read = getline(&buf, &size, f)) != -1) {
 		mpz_init_set_str(num, buf, 10);
-		factor(num, fact);
+		pollard_rho(num, fact);
 		mpz_div(div, num, fact);
 		gmp_printf("%Zd=%Zd*%Zd\n", num, div, fact);
 	}
